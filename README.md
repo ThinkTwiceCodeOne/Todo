@@ -13,6 +13,8 @@ It has following feature
 **Add task by writing in text box and click enter**<br/>
 **To save it you need to click save button**<br/>
 
+Now when you save it next time when you logIn it'll show the newItem in newItem box and completedItem in completedItem box
+
 Now 4 table you have to made in your computer. I used mysql. Also you need to change configuration in /com/todo/servlets. You've to change a little bit of JDBC code according to username and password
 
 Table Info 
