@@ -7,7 +7,7 @@ Now you can start server and run by **localhost:8080/todo**
 
 It has following feature
 
-**User can SignUp**
+**User can SignUp**<br/>
 **User can LogIn**
 **User can add task in todo and move from New to Completed**
 **Add task by writing in text box and click enter
