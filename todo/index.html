@@ -1,0 +1,207 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>todo</title>
+<link rel='stylesheet' href='jquery-ui/jquery-ui.css'>
+<script src='jquery/jquery.js'></script>
+<script src='jquery-ui/jquery-ui.js'></script>
+<style>
+.main-container
+{
+width:100%;
+height:700px;
+margin-top:0px;
+padding:0;
+background-color:black;
+}
+.opaque
+{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background-color:#D8D8D4;
+z-index:1;
+display:none;
+opacity:50%;
+}
+.body
+{
+width:100%;
+height:590px;
+background-color:#F4F12C;
+}
+.footer
+{
+background-color:#FEFEFE;
+text-align:center;
+}
+.header {
+background-color:#33B5FF;
+display: flex;
+align-items: center;
+}
+
+.heading-style {
+text-align: center;
+flex-grow: 1;
+font-size:40px;
+}
+
+.button-container {
+display: flex;
+}
+
+.signUp,
+.logIn {
+margin-left: 10px;
+margin-right:10px;
+border-radius:15px;
+font-size:16px;
+cursor:pointer;
+}
+.logInModalButton,
+.signUpModalButton
+{
+text-align:center;
+}
+.logInModal,
+.signUpModal
+{
+display:none;
+z-index:2;
+position:fixed;
+margin-top:200px;
+margin-left:40%;
+margin-right:40%;
+margin-bottom:300px;
+border-style:ridge;
+border-radius:10px;
+padding-right:10px;
+padding-left:10px;
+padding-top:10px;
+padding-bottom:10px;
+width:350px;
+height:150px;
+background-color:white;
+}
+</style>
+<script>
+$(()=>{
+$('#signUp').click(()=>{
+$('#opaque').show();
+$('#signUpModal').show();
+});
+$('#logIn').click(()=>{
+$('#opaque').show();
+$('#logInModal').show();
+});
+$('#cancel').click(()=>{
+$('#opaque').hide();
+$('#signUpModal').hide();
+});
+$('#logInCancel').click(()=>{
+$('#opaque').hide();
+$('#logInModal').hide();
+});
+$('#logInModalButton').click(()=>{
+let username=$('#logInModal #username').val();
+let password=$('#logInModal #password').val();
+var jsonData={
+username:username,
+password:password
+}
+$.ajax({
+url:'logIn',
+method:"POST",
+dataType:'json',
+data:JSON.stringify(jsonData),
+contentType:"application/json",
+mimeType:'application/json;charset=utf-8'
+}).done((data)=>{
+if(data.isSuccess===true)
+{
+window.location.href='eg1.html'
+}
+else
+{
+$('#logInModal #logInError').text(data.message);
+}
+})
+.fail((error)=>{
+});
+});
+$('#signUpModalButton').click(()=>{
+var username=$('#signUpModal #username').val();
+var password=$('#signUpModal #password').val();
+var jsonData={
+username:username,
+password:password
+}
+$.ajax({
+url:'signUp',
+method:"POST",
+dataType:'json',
+data:JSON.stringify(jsonData),
+contentType:"application/json",
+mimeType:'application/json;charset=utf-8'
+}).done((data)=>{
+if(data.isSuccess===true)
+{
+$('#opaque').hide();
+$('#signUpModal').hide();
+}
+else
+{
+$('#signUpModal #signUpError').text(data.message);
+}
+})
+.fail((error)=>{
+});
+});
+});
+</script>
+</head>
+<body>
+<div id='main-container' class='main-container'>
+<div id='opaque' class='opaque'>
+</div>
+<div class="header">
+<h1 class='heading-style'>ToDo</h1>
+<div class="button-container">
+<button class='signUp' type='button' id='signUp'>SignUp</button>
+<button class='logIn' type='button' id='logIn'>LogIn</button>
+</div>
+</div>
+<div class='body'>
+<h1 style='text-align:center;padding-top:50px'>Organise your work</h1>
+<div id='signUpModal' class='signUpModal'>
+<span id='signUpError' style='color:red;'></span><br><br>
+Username <input type='text' id='username' name='username'><br>
+Password <input type='password' id='password' name='password'><br>
+<br><br>
+<div class='signUpModalButton'>
+<button class='signUp' id='signUpModalButton' type='submit'>SignUp</button>
+<button class='signUp' id='cancel' type='submit'>Cancel</button>
+</div>
+</div>
+<div id='logInModal' class='logInModal'>
+<span id='logInError' style='color:red;'></span><br><br>
+Username <input type='text' id='username' name='username'><br>
+Password <input type='password' id='password' name='password'><br>
+<br><br>
+<div class='logInModalButton'>
+<button class='logIn' id='logInModalButton' type='submit'>LogIn</button>
+<button class='logIn' id='logInCancel' type='submit'>Cancel</button>
+</div>
+</div>
+</div>
+<div class='footer'>
+<p>&copy; 2023 Yash Mundra</p>
+</div>
+</div>
+</body>
+</html>
+

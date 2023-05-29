@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>jQuery Drag & Drop</title>
+<script src="jquery/jquery.js"></script>
+<script src="jquery-ui/jquery-ui.js"></script>
+<script src="jquery-ui/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="jquery-ui/jquery-ui.css">
+<link rel="stylesheet" href="jquery-ui/jquery-ui.min.css">
+<style>
+.center {
+display: flex;
+justify-content: center;
+align-items: center;
+height: 20vh;
+flex-direction: column;
+}
+.box {
+float: right;
+width: 45%;
+margin-right: 5%;
+border: 2px solid #333;
+border-radius: 2px;
+}
+.connected-sortable {
+list-style: none;
+padding: 20px;
+margin: 0px;
+}
+.draggable-main{
+width: 800px;
+display:flex;
+justify-content:space-between;
+margin: 0 auto;
+}
+.draggable-left{
+color:grey;
+}
+.draggable-right{
+color:blue;
+}
+ul li:hover {
+cursor: pointer;
+background-color: #fff;
+color: #000;
+}
+.header
+{
+text-align:center;
+}
+</style>
+<script>
+var user="";
+var newItemList=[]
+var completedItemList=[]
+$(()=>{
+$.ajax({
+url:'authenticate',
+method:"GET"
+}).done((data)=>{
+if(data.isSuccess===true)
+{
+user=data.message;
+var linkText='Logout';
+var linkUrl='logout'
+var hyperlink = $('<a>').attr('href', linkUrl).text(linkText);
+hyperlink.click(()=>{
+$.ajax({
+url:'logout',
+method:'GET'
+}).done((data)=>{
+if(data.isSuccess===true) window.location.href='index.html';
+}).
+fail((error)=>{
+});
+});
+$('#userDiv').append(hyperlink);
+$('#userDiv #user').text(user);
+var getListData=
+{
+'username':user
+}
+$.ajax({
+url:'getList',
+method:"POST",
+dataType:'json',
+data:JSON.stringify(getListData),
+contentType:"application/json",
+mimeType:'application/json;charset=utf-8'
+}).done((data)=>{
+if(data.newItem!==null)
+{
+for(let i=0;i<data.newItem.length;i++)
+{
+let newTaskDiv=$('<div>');
+let newTaskItem=$('<li>');
+newTaskItem.text(data.newItem[i]);
+newTaskDiv.append(newTaskItem);
+$('#newTask').append(newTaskDiv);
+}
+}
+if(data.completedItem!==null)
+{
+for(let i=0;i<data.completedItem.length;i++)
+{
+let newTaskDiv=$('<div>');
+let newTaskItem=$('<li>');
+newTaskItem.text(data.completedItem[i]);
+newTaskDiv.append(newTaskItem);
+$('#completedTask').append(newTaskDiv);
+}
+}
+})
+.fail((error)=>{
+});
+}
+if(data.isSuccess===false) window.location.href='index.html'
+})
+.fail((error)=>{
+window.location.href='index.html'
+});
+$('#addTask').click(()=>{
+let newTask=$('#newTaskText').val();
+$('#newTaskText').val('');
+let newTaskDiv=$('<div>');
+let newTaskItem=$('<li>');
+newTaskItem.text(newTask);
+newTaskDiv.append(newTaskItem);
+$('#newTask').append(newTaskDiv);
+});
+$('#saveTask').click(()=>{
+let newTaskListElements=$('#newTask li');
+let completedTaskListElements=$('#completedTask li');
+newTaskListElements.each(function(){
+let listItem=$(this);
+newItemList.push(listItem.text());
+});
+completedTaskListElements.each(function(){
+let listItem=$(this);
+completedItemList.push(listItem.text());
+});
+let itemJson={
+'user':user,
+'newItem':newItemList,
+'completedItem':completedItemList
+}
+$.ajax({
+url:'saveData',
+method:"POST",
+dataType:'json',
+data:JSON.stringify(itemJson),
+contentType:"application/json",
+mimeType:'application/json;charset=utf-8'
+}).done((data)=>{
+})
+.fail((error)=>{
+});
+});
+$(".draggable-left, .draggable-right").sortable({
+connectWith: ".connected-sortable",
+stack: ".connected-sortable ul"
+}).disableSelection();
+});
+</script>
+</head>
+<body>
+<div id='header' style='display:flex;justify-content:center'>
+<h1>ToDo</h1>
+<div id='userDiv' style='display:flex; align-items:center;justify-content:flex-end;'>
+<div style='margin-right:0px;margin-left:0px'>
+<span id='user' style='padding-right:20px;padding-left:20px'></span>
+</div>
+</div>
+</div>
+<br><br>
+<div class="draggable-main">
+<div class="box">
+New Task
+<ul id='newTask' class="connected-sortable draggable-left">
+</ul>
+</div>
+<br><br><br><br>
+<br><br><br>
+<div class="box">
+Completed Task
+<ul id='completedTask' class="connected-sortable draggable-right">
+</ul>
+</div>
+</div>
+<br><br>
+<div class='center'>
+<input type='text' id='newTaskText'>
+<button type='submit' id='addTask'>Add Task</button><br><br>
+<button type='submit' id='saveTask'>Save</button>
+</div>
+</body>
+</html>
