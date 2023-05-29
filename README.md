@@ -8,10 +8,10 @@ Now you can start server and run by **localhost:8080/todo**
 It has following feature
 
 **User can SignUp**<br/>
-**User can LogIn**
-**User can add task in todo and move from New to Completed**
-**Add task by writing in text box and click enter
-**To save it you need to click save button**
+**User can LogIn**<br/>
+**User can add task in todo and move from New to Completed**<br/>
+**Add task by writing in text box and click enter**<br/>
+**To save it you need to click save button**<br/>
 
 Now 4 table you have to made in your computer. I used mysql. Also you need to change configuration in /com/todo/servlets. You've to change a little bit of JDBC code according to username and password
 
